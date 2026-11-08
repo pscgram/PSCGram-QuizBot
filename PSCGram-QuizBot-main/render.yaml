@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: pscgram-quizbot
+    runtime: python
+    plan: starter
+    buildCommand: apt-get update && apt-get install -y tesseract-ocr poppler-utils && pip install -r requirements.txt
+    startCommand: python -m bot
+    healthCheckPath: /health
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: DATABASE_URL
+        sync: false
+      - key: PDF_CHANNEL_ID
+        sync: false
+      - key: WEBHOOK_SECRET
+        generateValue: true
+      - key: PREMIUM_PRICE_STARS
+        value: "500"
+      - key: DEFAULT_QUIZ_QUESTIONS
+        value: "10"
+      - key: DEFAULT_TEST_MINUTES
+        value: "15"

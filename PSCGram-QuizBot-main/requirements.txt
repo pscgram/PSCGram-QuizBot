@@ -1,0 +1,11 @@
+python-telegram-bot==21.10
+SQLAlchemy==2.0.36
+python-dotenv==1.0.1
+openai==1.59.7
+pypdf==5.1.0
+psycopg[binary]==3.2.3
+Pillow==11.0.0
+pytesseract==0.3.13
+pdf2image==1.17.0
+aiohttp==3.11.11
+reportlab==4.2.5\n
