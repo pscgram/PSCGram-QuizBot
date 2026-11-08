@@ -1,4 +1,4 @@
- 
+
 name: Extract PSCGram QuizBot ZIP
 
 on:
@@ -14,22 +14,33 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract ZIP
+      - name: Find and extract ZIP
         run: |
+          echo "Checking uploaded ZIP files..."
+          ls -lah
+
+          ZIP_FILE=$(find . -maxdepth 1 -type f -iname "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ERROR: No ZIP file found in repository root."
+            exit 1
+          fi
+
+          echo "Extracting: $ZIP_FILE"
+
           mkdir -p extracted
-          unzip -o PSCGram-QuizBot-GitHub-Upload.zip -d extracted
+          unzip -o "$ZIP_FILE" -d extracted
 
           cp -a extracted/. .
           rm -rf extracted
-          rm -f PSCGram-QuizBot-GitHub-Upload.zip
+          rm -f "$ZIP_FILE"
 
-      - name: Commit extracted files
+      - name: Commit extracted project
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add -A
-          git commit -m "Extract PSCGram QuizBot project" || echo "No changes"
+          git commit -m "Extract corrected PSCGram QuizBot"
           git push
