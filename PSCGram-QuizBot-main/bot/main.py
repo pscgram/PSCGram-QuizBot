@@ -377,6 +377,11 @@ async def health(request):
 # Telegram webhook endpoint
 async def telegram_webhook(request):
 
+    if BOT is None:
+        raise web.HTTPServiceUnavailable(
+            text="Telegram application is not ready"
+        )
+
     secret = os.getenv("WEBHOOK_SECRET", "")
 
     if not secret:
@@ -468,15 +473,18 @@ async def on_shutdown(server):
 
     if BOT is not None:
 
+        app = BOT
+        BOT = None
+
         try:
-            await BOT.bot.delete_webhook()
-
-            await BOT.stop()
-
-            await BOT.shutdown()
+            await app.stop()
 
         finally:
-            BOT = None
+            await app.shutdown()
+
+        logger.info(
+            "Telegram application stopped safely."
+        )
 
 
 # Create web application
